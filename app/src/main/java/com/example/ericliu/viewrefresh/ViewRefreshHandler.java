@@ -3,6 +3,7 @@ package com.example.ericliu.viewrefresh;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import java.lang.ref.WeakReference;
@@ -60,7 +61,7 @@ public final class ViewRefreshHandler {
         private final WeakReference<View> viewRef;
         private final Bundle mArgs;
 
-        public ViewRunnable(View view, Bundle args) {
+        public ViewRunnable(View view, @Nullable Bundle args) {
             viewRef = new WeakReference<View>(view);
             if (args == null) {
                 mArgs = new Bundle();
