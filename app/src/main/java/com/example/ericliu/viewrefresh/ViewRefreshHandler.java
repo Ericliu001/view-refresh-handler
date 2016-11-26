@@ -36,7 +36,7 @@ public final class ViewRefreshHandler {
                 if (runnable.viewRef.get() != null) {
                     scheduleNext(interval);
                 } else {
-                    // stop refreshing when the reference of the View is gone.
+                    // stop refreshing when the View is gone.
                     cancelPendingTask();
                 }
             }
