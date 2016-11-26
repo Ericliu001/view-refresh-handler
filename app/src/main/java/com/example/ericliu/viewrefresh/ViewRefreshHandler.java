@@ -27,6 +27,7 @@ public final class ViewRefreshHandler {
     }
 
     public void executePeriodically(final ViewRunnable runnable, final long interval) {
+        cancelPendingTask();
         mRunnableDecorator = new Runnable() {
             @Override
             public void run() {
@@ -35,15 +36,14 @@ public final class ViewRefreshHandler {
                     scheduleNext(interval);
                 } else {
                     // stop refreshing when the reference of the View is gone.
-                    cancel();
+                    cancelPendingTask();
                 }
             }
         };
-
         scheduleNext(interval);
     }
 
-    private void cancel() {
+    private void cancelPendingTask() {
         mRunnableDecorator = null;
         mHandler.removeCallbacksAndMessages(null);
     }
