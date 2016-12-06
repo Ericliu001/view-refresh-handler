@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         viewRefreshHandler = new ViewRefreshHandler();
 
-        final View tvMain = findViewById(R.id.tvMain);
+        final TextView tvMain = (TextView) findViewById(R.id.tvMain);
         Button btnRefresh = (Button) findViewById(R.id.btnRefresh);
 
         btnRefresh.setOnClickListener(new View.OnClickListener() {
@@ -38,20 +38,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private static class RefreshRunnalbe extends ViewRefreshHandler.ViewRunnable {
+    private static class RefreshRunnalbe extends ViewRefreshHandler.ViewRunnable<TextView> {
         private static final String ARGS_COUNT = "args.count";
 
-        public RefreshRunnalbe(View view, Bundle args) {
-            super(view, args);
+        public RefreshRunnalbe(TextView textView, Bundle args) {
+            super(textView, args);
         }
 
         @Override
-        protected void run(View view, Bundle args) {
-            TextView tvMain = (TextView) view;
+        protected void run(TextView textView, Bundle args) {
             int count = args.getInt(ARGS_COUNT);
-            tvMain.setText(count  + " ");
+            textView.setText(count + " ");
 
-            args.putInt(ARGS_COUNT, ++ count);
+            args.putInt(ARGS_COUNT, ++count);
         }
     }
 }

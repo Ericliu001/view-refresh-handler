@@ -57,12 +57,12 @@ public final class ViewRefreshHandler {
     }
 
 
-    public static abstract class ViewRunnable implements Runnable {
-        private final WeakReference<View> viewRef;
+    public static abstract class ViewRunnable<T extends View> implements Runnable {
+        private final WeakReference<T> viewRef;
         private final Bundle mArgs;
 
-        public ViewRunnable(View view, @Nullable Bundle args) {
-            viewRef = new WeakReference<View>(view);
+        public ViewRunnable(T view, @Nullable Bundle args) {
+            viewRef = new WeakReference<>(view);
             if (args == null) {
                 mArgs = new Bundle();
             } else {
@@ -72,13 +72,13 @@ public final class ViewRefreshHandler {
 
         @Override
         public void run() {
-            View view = viewRef.get();
+            T view = viewRef.get();
             if (view != null) {
                 run(view, mArgs);
             }
         }
 
-        protected abstract void run(View view, Bundle args);
+        protected abstract void run(T view, Bundle args);
     }
 }
 
