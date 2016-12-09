@@ -11,10 +11,13 @@ import java.lang.ref.WeakReference;
 
 /**
  * Created by ericliu on 26/11/16.
+ * <p>
+ * A composite of a {@link Handler} to schedule operations periodically.
  */
 
 public final class ViewRefreshHandler {
     private static final long MINI_SECS_ONE_MINUTE = 1000 * 60;
+
     private final Handler mHandler;
     private Runnable mRunnableDecorator;
 
@@ -29,6 +32,12 @@ public final class ViewRefreshHandler {
 
     public void executePeriodically(final ViewRunnable runnable, final long interval) {
         cancelPendingTask();
+
+        /**
+         * creates a decorator class of the runnable being passed in.
+         * after executing the run method in the runnable, call {@link #scheduleNext(long)}
+         * to schedule the next call.
+         */
         mRunnableDecorator = new Runnable() {
             @Override
             public void run() {
@@ -57,6 +66,13 @@ public final class ViewRefreshHandler {
     }
 
 
+    /**
+     * A subclass class of {@link Runnable} which only holds a WeakReference of a View object,
+     * <p>
+     * as a result, it avoids the problem of memory leak caused by not releasing references of View objects.
+     *
+     * @param <T> - the View instance to be operated on.
+     */
     public static abstract class ViewRunnable<T extends View> implements Runnable {
         private final WeakReference<T> viewRef;
         private final Bundle mArgs;
