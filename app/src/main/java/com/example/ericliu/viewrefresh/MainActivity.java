@@ -38,10 +38,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     *  uses a static inner-class to avoid the runnable object holding a reference to the activity.
+     */
     private static class RefreshRunnalbe extends ViewRefreshHandler.ViewRunnable<TextView> {
         private static final String ARGS_COUNT = "args.count";
 
-        public RefreshRunnalbe(TextView textView, Bundle args) {
+        RefreshRunnalbe(TextView textView, Bundle args) {
             super(textView, args);
         }
 
