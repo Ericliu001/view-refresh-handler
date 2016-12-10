@@ -12,29 +12,9 @@
     android:background="#673AB7"
     tools:context="com.example.ericliu.viewrefresh.MainActivity">
 
-    <Button
-        android:text="Start"
-        android:background="#D1C4E9"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvMain"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="109dp"
-        android:id="@+id/btnRefresh"/>
-
-    <Button
-        android:text="Next Activity"
-        android:background="#D1C4E9"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btnRefresh"
-        android:layout_alignRight="@+id/btnRefresh"
-        android:layout_alignEnd="@+id/btnRefresh"
-        android:layout_marginTop="47dp"
-        android:id="@+id/btnNextActivity"/>
 
     <TextView
-        android:id="@+id/tvMain"
+        android:id="@+id/tvCounter"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginTop="50dp"
@@ -46,4 +26,44 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>
+
+    <Button
+        android:text="Start Counter"
+        android:background="#D1C4E9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:id="@+id/btnStartCounter"
+        android:layout_below="@+id/tvCounter"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+
+    <TextView
+        android:id="@+id/tvTimer"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="80dp"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:text="Timer"
+        android:gravity="center"
+        android:layout_below="@id/btnStartCounter"
+        android:background="@android:color/white"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:text="Start 30s Timer"
+        android:background="#D1C4E9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvTimer"
+        android:layout_alignRight="@+id/btnStartCounter"
+        android:layout_alignEnd="@+id/btnStartCounter"
+        android:layout_marginTop="25dp"
+        android:id="@+id/btnStartTimer"/>
+
+
+
 </RelativeLayout>
