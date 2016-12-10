@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -20,52 +22,77 @@ public final class ViewRefreshHandler {
     private static final long MINI_SECS_ONE_SECOND = 1000;
 
     private final Handler mHandler;
-    private Runnable mRunnableDecorator;
+    private final Map<Class<? extends ViewRunnable>, RunnableDecorator> decoratorMap;
 
     public ViewRefreshHandler() {
         mHandler = new Handler(Looper.getMainLooper());
+        decoratorMap = new HashMap<>();
     }
 
-    public void executePerSecond(ViewRunnable runnable) {
-        executePeriodically(runnable, MINI_SECS_ONE_SECOND);
+    public void executePerSecond(ViewRunnable task) {
+        executePeriodically(task, MINI_SECS_ONE_SECOND);
     }
 
-    public void executePerMinute(ViewRunnable runnable) {
-        executePeriodically(runnable, MINI_SECS_ONE_MINUTE);
+    public void executePerMinute(ViewRunnable task) {
+        executePeriodically(task, MINI_SECS_ONE_MINUTE);
     }
 
-    public void executePeriodically(final ViewRunnable runnable, final long interval) {
-        cancelPendingTask();
+    public void executePeriodically(final ViewRunnable task, final long interval) {
+        cancelPendingTask(task);
 
         /**
          * creates a decorator class of the runnable being passed in.
-         * after executing the run method in the runnable, call {@link #scheduleNext(long)}
+         * after executing the run method in the runnable, call {@link #scheduleNext(Class, long)}
          * to schedule the next call.
          */
-        mRunnableDecorator = new Runnable() {
-            @Override
-            public void run() {
-                runnable.run();
-                if (runnable.viewRef.get() != null && !runnable.terminate) {
-                    scheduleNext(interval);
-                } else {
-                    // stop refreshing when the View is gone.
-                    cancelPendingTask();
-                }
+        RunnableDecorator runnableDecorator = new RunnableDecorator(task, interval);
+        mHandler.post(runnableDecorator);
+
+        decoratorMap.put(task.getClass(), runnableDecorator);
+    }
+
+
+    private class RunnableDecorator implements Runnable {
+        private ViewRunnable runnable;
+        private long interval;
+
+        public RunnableDecorator(ViewRunnable runnable, long interval) {
+            this.runnable = runnable;
+            this.interval = interval;
+        }
+
+        @Override
+        public void run() {
+            runnable.run();
+            if (runnable.viewRef.get() != null && !runnable.terminate) {
+                scheduleNext(this, interval);
+            } else {
+                // stop refreshing when the View is gone.
+                cancelPendingTask(runnable);
             }
-        };
-        mHandler.post(mRunnableDecorator);
+        }
     }
 
-    private void cancelPendingTask() {
-        mRunnableDecorator = null;
+    private void cancelPendingTask(ViewRunnable task) {
+        if (task != null) {
+            RunnableDecorator runnableDecorator = decoratorMap.get(task.getClass());
+            if (runnableDecorator != null) {
+                mHandler.removeCallbacks(runnableDecorator);
+                decoratorMap.remove(task.getClass());
+            }
+        }
+    }
+
+
+    public void cancelAll() {
         mHandler.removeCallbacksAndMessages(null);
+        decoratorMap.clear();
     }
 
 
-    private void scheduleNext(long interval) {
-        if (mRunnableDecorator != null) {
-            mHandler.postDelayed(mRunnableDecorator, interval);
+    private void scheduleNext(RunnableDecorator runnable, long interval) {
+        if (runnable != null) {
+            mHandler.postDelayed(runnable, interval);
         }
     }
 
