@@ -126,6 +126,9 @@ public final class ViewRefreshHandler {
             }
         }
 
+        /**
+         * stop scheduling tasks
+         */
         protected void terminate() {
             terminate = true;
         }
