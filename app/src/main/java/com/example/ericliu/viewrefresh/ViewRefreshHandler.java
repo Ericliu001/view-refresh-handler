@@ -13,7 +13,6 @@ import java.util.Map;
 
 /**
  * Created by ericliu on 26/11/16.
- * <p>
  * A composite of a {@link Handler} to schedule operations periodically.
  */
 
@@ -116,7 +115,7 @@ public final class ViewRefreshHandler {
         }
 
         @Override
-        public void run() {
+        public final void run() {
             T view = viewRef.get();
             if (view != null) {
                 run(view, mArgs);
