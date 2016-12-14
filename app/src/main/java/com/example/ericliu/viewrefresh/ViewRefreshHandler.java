@@ -29,15 +29,15 @@ public final class ViewRefreshHandler {
         decoratorMap = new HashMap<>();
     }
 
-    public void executePerSecond(ViewRunnable task) {
+    public final void executePerSecond(ViewRunnable task) {
         executePeriodically(task, MINI_SECS_ONE_SECOND);
     }
 
-    public void executePerMinute(ViewRunnable task) {
+    public final void executePerMinute(ViewRunnable task) {
         executePeriodically(task, MINI_SECS_ONE_MINUTE);
     }
 
-    public void executePeriodically(final ViewRunnable task, final long interval) {
+    public final void executePeriodically(final ViewRunnable task, final long interval) {
         cancelPendingTask(task);
 
         /**
@@ -45,7 +45,7 @@ public final class ViewRefreshHandler {
          * after executing the run method in the runnable, call {@link #scheduleNext(Class, long)}
          * to schedule the next call.
          */
-        RunnableDecorator runnableDecorator = new RunnableDecorator(task, interval);
+        final RunnableDecorator runnableDecorator = new RunnableDecorator(task, interval);
         mHandler.post(runnableDecorator);
 
         decoratorMap.put(task.getClass(), runnableDecorator);
@@ -53,8 +53,8 @@ public final class ViewRefreshHandler {
 
 
     private class RunnableDecorator implements Runnable {
-        private ViewRunnable runnable;
-        private long interval;
+        private final ViewRunnable runnable;
+        private final long interval;
 
         public RunnableDecorator(ViewRunnable runnable, long interval) {
             this.runnable = runnable;
@@ -73,6 +73,12 @@ public final class ViewRefreshHandler {
         }
     }
 
+    private void scheduleNext(RunnableDecorator runnable, long interval) {
+        if (runnable != null) {
+            mHandler.postDelayed(runnable, interval);
+        }
+    }
+
     private void cancelPendingTask(ViewRunnable task) {
         if (task != null) {
             RunnableDecorator runnableDecorator = decoratorMap.get(task.getClass());
@@ -83,19 +89,10 @@ public final class ViewRefreshHandler {
         }
     }
 
-
-    public void cancelAll() {
+    public final void cancelAll() {
         mHandler.removeCallbacksAndMessages(null);
         decoratorMap.clear();
     }
-
-
-    private void scheduleNext(RunnableDecorator runnable, long interval) {
-        if (runnable != null) {
-            mHandler.postDelayed(runnable, interval);
-        }
-    }
-
 
     /**
      * A subclass class of {@link Runnable} which only holds a WeakReference of a View object,
@@ -129,7 +126,7 @@ public final class ViewRefreshHandler {
         /**
          * stop scheduling tasks
          */
-        protected void terminate() {
+        protected final void terminate() {
             terminate = true;
         }
 
